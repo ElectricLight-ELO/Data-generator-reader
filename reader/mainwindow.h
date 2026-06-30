@@ -5,6 +5,8 @@
 #include <QSqlTableModel>
 #include <iostream>
 #include <thread>
+#include <random>
+#include <string>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -40,7 +42,7 @@ private:
 
 
     std::atomic<bool> recive_data = false;
-
+    std::string getRnd_digital();
     // метод под асинхронное обновление данных
     void asyncReciveData();
     std::thread thr;

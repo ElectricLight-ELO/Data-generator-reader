@@ -44,11 +44,15 @@ MainWindow::MainWindow(QWidget *parent)
   //  thr.detach();
 
     thr = std::thread(&MainWindow::asyncReciveData, this);
-
+    thr.detach();
 }
 
 MainWindow::~MainWindow()
 {
+    recive_data = false;
+    if(thr.joinable())
+        thr.join();
+
     delete ui;
 }
 
@@ -80,6 +84,14 @@ void MainWindow::create_model()
 
 }
 
+std::string MainWindow::getRnd_digital()
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dist(-100.0, 100.0);
+    return std::to_string(dist(gen));
+}
+
 void MainWindow::read_in_stream(){
     model->select();
    // model->setQuery("SELECT id, x, y, z, Vx, Vy, Vz FROM db");
@@ -106,13 +118,20 @@ void MainWindow::asyncReciveData()
     }
 }
 
-// write example
+// (write example)
 void MainWindow::on_pushButton_clicked()
 {
+
+    QString sql = QString("VALUES (%1, %2, %3, %4, %5, %6)")
+    .arg(getRnd_digital())
+        .arg(getRnd_digital())
+        .arg(getRnd_digital())
+        .arg(getRnd_digital())
+        .arg(getRnd_digital())
+        .arg(getRnd_digital());
     QSqlQuery query;
     bool ok = query.exec(
-        "INSERT INTO db (x, y, z, Vx, Vy, Vz) "
-        "VALUES (1.0, 2.0, 3.0, 0.5, 0.6, 0.7)"
+        "INSERT INTO db (x, y, z, Vx, Vy, Vz) " + sql
         );
 }
 
