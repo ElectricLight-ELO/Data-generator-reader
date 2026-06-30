@@ -42,7 +42,7 @@ private:
 
 
     std::atomic<bool> recive_data = false;
-    std::string getRnd_digital();
+    std::string getRnd_digital();// для тестовой кнопки на создание
     // метод под асинхронное обновление данных
     void asyncReciveData();
     std::thread thr;
