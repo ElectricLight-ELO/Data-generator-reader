@@ -21,6 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
     db.setDatabaseName("work_db.db");
     if(!db.open()) return;
 
+    QSqlQuery pragma(db);
+
+    // встроенное решение от проблемы с блокировкой доступа к sqlite3
+
+
     QSqlQuery query;
     bool ok = query.exec("CREATE TABLE IF NOT EXISTS db("
                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -93,6 +98,9 @@ std::string MainWindow::getRnd_digital()
 }
 
 void MainWindow::read_in_stream(){
+    QSqlDatabase db = QSqlDatabase::database();
+    db.close();
+    db.open();
     model->select();
    // model->setQuery("SELECT id, x, y, z, Vx, Vy, Vz FROM db");
 
