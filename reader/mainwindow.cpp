@@ -4,7 +4,10 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QTreeView>
-
+#include <iostream>
+#include <thread>
+#include <QMessageBox>
+#include <QTimer>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -31,6 +34,17 @@ MainWindow::MainWindow(QWidget *parent)
     if(!ok) return;
 
     create_model();
+
+    connect(this, &MainWindow::ready_read,
+            this, &MainWindow::read_in_stream,
+            Qt::QueuedConnection);
+
+
+
+  //  thr.detach();
+
+    thr = std::thread(&MainWindow::asyncReciveData, this);
+
 }
 
 MainWindow::~MainWindow()
@@ -66,6 +80,33 @@ void MainWindow::create_model()
 
 }
 
+void MainWindow::read_in_stream(){
+    model->select();
+   // model->setQuery("SELECT id, x, y, z, Vx, Vy, Vz FROM db");
+
+   // model->setHeaderData(0, Qt::Horizontal, "id");
+   // model->setHeaderData(1, Qt::Horizontal, "x");
+   // model->setHeaderData(2, Qt::Horizontal, "y");
+   // model->setHeaderData(3, Qt::Horizontal, "z");
+   // model->setHeaderData(4, Qt::Horizontal, "Vx");
+   // model->setHeaderData(5, Qt::Horizontal, "Vy");
+   // model->setHeaderData(6, Qt::Horizontal, "Vz");
+}
+
+void MainWindow::asyncReciveData()
+{
+    while(true) {
+
+        if(recive_data){
+            emit ready_read();
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+    }
+}
+
+// write example
 void MainWindow::on_pushButton_clicked()
 {
     QSqlQuery query;
@@ -75,19 +116,15 @@ void MainWindow::on_pushButton_clicked()
         );
 }
 
-
+// метод для запуска флага на получение данных
 void MainWindow::on_pushButton_2_clicked()
 {
-    model->setQuery("SELECT id, x, y, z, Vx, Vy, Vz FROM db");
+    if(!recive_data){
+        recive_data = true;
+    }else{
+        recive_data = false;
+    }
 
-    // Красивые заголовки колонок
-    model->setHeaderData(0, Qt::Horizontal, "ID");
-    model->setHeaderData(1, Qt::Horizontal, "X");
-    model->setHeaderData(2, Qt::Horizontal, "Y");
-    model->setHeaderData(3, Qt::Horizontal, "Z");
-    model->setHeaderData(4, Qt::Horizontal, "Vx");
-    model->setHeaderData(5, Qt::Horizontal, "Vy");
-    model->setHeaderData(6, Qt::Horizontal, "Vz");
 
 }
 
