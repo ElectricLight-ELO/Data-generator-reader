@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSqlTableModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,9 +18,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
 
+    QSqlTableModel* model;
     void create_model();
 };
 #endif // MAINWINDOW_H

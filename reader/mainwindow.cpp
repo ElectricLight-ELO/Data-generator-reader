@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     this->setWindowTitle("Reader");
-
+    this->setWindowFlags(Qt::Window | Qt::MSWindowsFixedSizeDialogHint);
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("work_db.db");
@@ -40,7 +40,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::create_model()
 {
-    QSqlTableModel* model = new QSqlTableModel;
+    model = new QSqlTableModel;
     model->setTable("db");
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
     model->select();
@@ -65,3 +65,29 @@ void MainWindow::create_model()
 
 
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    QSqlQuery query;
+    bool ok = query.exec(
+        "INSERT INTO db (x, y, z, Vx, Vy, Vz) "
+        "VALUES (1.0, 2.0, 3.0, 0.5, 0.6, 0.7)"
+        );
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    model->setQuery("SELECT id, x, y, z, Vx, Vy, Vz FROM db");
+
+    // Красивые заголовки колонок
+    model->setHeaderData(0, Qt::Horizontal, "ID");
+    model->setHeaderData(1, Qt::Horizontal, "X");
+    model->setHeaderData(2, Qt::Horizontal, "Y");
+    model->setHeaderData(3, Qt::Horizontal, "Z");
+    model->setHeaderData(4, Qt::Horizontal, "Vx");
+    model->setHeaderData(5, Qt::Horizontal, "Vy");
+    model->setHeaderData(6, Qt::Horizontal, "Vz");
+
+}
+
