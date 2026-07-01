@@ -8,6 +8,8 @@
 #include <thread>
 #include <QMessageBox>
 #include <QTimer>
+#include <QScrollBar>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -99,10 +101,35 @@ std::string MainWindow::getRnd_digital()
 }
 
 void MainWindow::read_in_stream(){
-    QSqlDatabase db = QSqlDatabase::database();
+    /*
+     *
+     QSqlDatabase db = QSqlDatabase::database();
     db.close();
     db.open();
     model->select();
+     * */
+
+    int scrollValue = ui->treeView->verticalScrollBar()->value();
+
+    model->select();
+
+    // подгружаем сразу все строки
+    while (model->canFetchMore())
+        model->fetchMore();
+
+    QTimer::singleShot(0, this, [this, scrollValue]() {
+        ui->treeView->verticalScrollBar()->setValue(scrollValue);
+    });
+
+    /*
+   int scrollValue = ui->treeView->verticalScrollBar()->value();
+
+    model->setTable("db");   // пересоздаёт внутренний QSqlQuery модели
+    model->select();
+
+    ui->treeView->verticalScrollBar()->setValue(scrollValue);
+    */
+
    // model->setQuery("SELECT id, x, y, z, Vx, Vy, Vz FROM db");
 
    // model->setHeaderData(0, Qt::Horizontal, "id");

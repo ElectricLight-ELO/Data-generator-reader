@@ -76,7 +76,7 @@ def spam_data(conn, is_hard, delay=0.5):
     try:
         while True:
             if(is_hard):
-                update_batch_records(conn, ids, min_count=300, max_count=700)
+                update_batch_records(conn, ids, min_count=500, max_count=900)
             else:
                 update_batch_records(conn, ids, min_count=100, max_count=200)
             time.sleep(delay)
