@@ -148,8 +148,10 @@ void MainWindow::on_pushButton_2_clicked()
 {
     if(!recive_data){
         recive_data = true;
+        ui->pushButton_2->setText("stop recive data");
     }else{
         recive_data = false;
+        ui->pushButton_2->setText("start recive data");
     }
 
 

@@ -7,6 +7,7 @@ def show_inf():
     print("1 - сделать вывод нескольких записей")
     print("2 - создать 1к записей")
     print("3 - начать спамить данными")
+    print("4 - начать сильно спамить данными")
     print("Ввод: ")
 
 def generate_random_record():
@@ -65,7 +66,7 @@ def update_batch_records(conn, ids, min_count=100, max_count=200):
     conn.commit()
     print(f"Обновлено {batch_size} записей")
 
-def spam_data(conn, delay=0.5):
+def spam_data(conn, is_hard, delay=0.5):
     print("Старт спама. Нажмите Ctrl+C для остановки.")
     ids = get_all_ids(conn)
     if not ids:
@@ -74,7 +75,10 @@ def spam_data(conn, delay=0.5):
 
     try:
         while True:
-            update_batch_records(conn, ids, min_count=100, max_count=200)
+            if(is_hard):
+                update_batch_records(conn, ids, min_count=300, max_count=700)
+            else:
+                update_batch_records(conn, ids, min_count=100, max_count=200)
             time.sleep(delay)
     except KeyboardInterrupt:
         print("\nСпам остановлен")
@@ -110,14 +114,17 @@ def main():
         i = int(input())
         if i == 1:
             df = pd.read_sql_query("SELECT * FROM db", conn)
-            print(df.head(10))
+            print(df.head(30))
             break
         elif i == 2:
             create_1000_records(conn, reset_first=True)
             break
         elif i == 3:
-            spam_data(conn, delay=0.5)
+            spam_data(conn, False, delay=1)
             break
+        elif i == 4:
+            spam_data(conn, True, delay=0.3)
+            break;
         else:
             conn.close()
             break
