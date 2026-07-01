@@ -24,7 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     QSqlQuery pragma(db);
 
     // встроенное решение от проблемы с блокировкой доступа к sqlite3
-
+    pragma.exec("PRAGMA journal_mode=WAL;");
+    pragma.exec("PRAGMA busy_timeout=5000;");
 
     QSqlQuery query;
     bool ok = query.exec("CREATE TABLE IF NOT EXISTS db("

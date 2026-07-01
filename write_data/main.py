@@ -109,6 +109,9 @@ def main():
     conn = sqlite3.connect(path_DB_GLOBAL)
 
 
+    conn.execute("PRAGMA journal_mode=WAL;") # устранение блокировки одновременного доступа под sqlite
+    conn.execute("PRAGMA busy_timeout=5000;")
+
     while True:
         show_inf()
         i = int(input())
@@ -128,9 +131,6 @@ def main():
         else:
             conn.close()
             break
-
-if __name__ == '__main__':
-    main()
 
 if __name__ == '__main__':
     main()
